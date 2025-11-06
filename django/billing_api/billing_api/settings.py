@@ -14,21 +14,23 @@ from pathlib import Path
 import os
 from datetime import timedelta
 from dotenv import load_dotenv
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
+load_dotenv(BASE_DIR / ".env")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-mnf^@85z%+p#w+6cxf8w+w550^vwbn$z6n^sva-6f1y0ii&1k^'
+SECRET_KEY = 'django-insecure-zwyz37f!jv%-7d*r41xzee5$vlupnm!)men4v=x()hyvoz3i&g'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
+APPEND_SLASH = False
 
 
 # Application definition
@@ -43,7 +45,24 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'users',
+    'catalog',
 ]
+
+REST_FRAMEWORK = {
+  'DEFAULT_AUTHENTICATION_CLASSES':(
+    'rest_framework_simplejwt.authentication.JWTAuthentication',
+  ),
+  'DEFAULT_PERMISSION_CLASSES':(
+    'rest_framework.permissions.IsAuthenticated',
+  ),
+  'DEFAULT_FILTER_BACKENDS':(
+    'django_filters.rest_framework.DjangoFilterBackend',
+    'rest_framework.filters.SearchFilter',
+    'rest_framework.filters.OrderingFilter',
+  ),
+  'DEFAULT_PAGINATION_CLASS':'rest_framework.pagination.PageNumberPagination',
+  'PAGE_SIZE':10
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -81,12 +100,12 @@ WSGI_APPLICATION = 'billing_api.wsgi.application'
 DATABASES={
   'default':{
     'ENGINE':'django.db.backends.postgresql',
-    'NAME':os.getenv('DB_NAME','programacion'),
+    'NAME':os.getenv('DB_NAME','django'),
     'USER':os.getenv('DB_USER','postgres'),
-    'PASSWORD':os.getenv('DB_PASS','admin'),
+    'PASSWORD':os.getenv('DB_PASS','postgres'),
     'HOST':os.getenv('DB_HOST','localhost'),
     'PORT':os.getenv('DB_PORT','5432')
-    }
+  }
 }
 
 
@@ -130,3 +149,8 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+SIMPLE_JWT = {
+  'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+  'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+}
