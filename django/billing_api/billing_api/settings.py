@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'django_filters',
     'users',
     'catalog',
+    'invoices.apps.InvoicesConfig',
+    
 ]
 
 REST_FRAMEWORK = {
