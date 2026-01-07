@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'rest_framework',
     'django_filters',
     'users',
@@ -49,6 +50,8 @@ INSTALLED_APPS = [
     'invoices.apps.InvoicesConfig',
     'warehouses',
     'basics',
+    'payments',
+
 ]
 
 REST_FRAMEWORK = {
@@ -68,6 +71,7 @@ REST_FRAMEWORK = {
 }
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -75,6 +79,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5174",
+    "http://localhost:5174"
 ]
 
 ROOT_URLCONF = 'billing_api.urls'
@@ -100,25 +110,17 @@ WSGI_APPLICATION = 'billing_api.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-# Usando SQLite temporalmente para evitar problemas de compatibilidad con psycopg2 y Python 3.13
+# Configuración para PostgreSQL
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DB_NAME', 'billing_api'),
+        'USER': os.getenv('DB_USER', 'postgres'),
+        'PASSWORD': os.getenv('DB_PASS', 'admin'),
+        'HOST': os.getenv('DB_HOST', 'localhost'),
+        'PORT': os.getenv('DB_PORT', '5432'),
     }
 }
-
-# Descomenta esto cuando tengas PostgreSQL configurado correctamente:
-# DATABASES={
-#   'default':{
-#     'ENGINE':'django.db.backends.postgresql',
-#     'NAME':os.getenv('DB_NAME','django'),
-#     'USER':os.getenv('DB_USER','postgres'),
-#     'PASSWORD':os.getenv('DB_PASS','postgres'),
-#     'HOST':os.getenv('DB_HOST','localhost'),
-#     'PORT':os.getenv('DB_PORT','5432')
-#   }
-# }
 
 
 # Password validation
